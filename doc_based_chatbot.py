@@ -10,8 +10,9 @@ import wikipedia as wk
 from collections import defaultdict
 nltk.download('punkt') # first-time use only
 nltk.download('wordnet') # first-time use only
+nltk.download('averaged_perceptron_tagger') # Missing data  
 #load the dataset
-data=open('/Users/nageshsinghchauhan/Documents/projects/chatbot/hr.txt','r',errors = 'ignore')
+data=open('C:/Users/Marti/repos/Assistant2021/Summer/Document-based-chatbot/hr.txt','r',errors = 'ignore')
 raw=data.read()
 raw = raw.lower()
 #sentence tokenizer
