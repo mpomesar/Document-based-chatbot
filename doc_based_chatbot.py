@@ -1,3 +1,4 @@
+import sys
 import nltk
 import numpy as np
 import random
@@ -8,15 +9,6 @@ from nltk.corpus import wordnet as wn
 from nltk.stem.wordnet import WordNetLemmatizer
 import wikipedia as wk
 from collections import defaultdict
-nltk.download('punkt') # first-time use only
-nltk.download('wordnet') # first-time use only
-nltk.download('averaged_perceptron_tagger') # Missing data  
-#load the dataset
-data=open('C:/Users/Marti/repos/Assistant2021/Summer/Document-based-chatbot/hr.txt','r',errors = 'ignore')
-raw=data.read()
-raw = raw.lower()
-#sentence tokenizer
-sent_tokens = nltk.sent_tokenize(raw)# converts to list of sentences
 
 #Lemmatization
 def Normalize(text):
@@ -61,7 +53,7 @@ def greeting(user_response):
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity, linear_kernel
 
-def response(user_response):
+def response(user_response,sent_tokens):
     robo_response=''
     sent_tokens.append(user_response)
     TfidfVec = TfidfVectorizer(tokenizer=Normalize, stop_words='english')
@@ -94,22 +86,42 @@ def wikipedia_data(input):
     except Exception as e:
             print(e)
 
-flag=True
-print("My name is Chatterbot and I'm a chatbot. If you want to exit, type Bye!")
-while(flag==True):
-    user_response = input()
-    user_response=user_response.lower()
-    if(user_response!='bye'):
-        if(user_response=='thanks' or user_response=='thank you' ):
-            flag=False
-            print("Chatterbot : You are welcome..")
-        else:
-            if(greeting(user_response)!=None):
-                print("Chatterbot : "+greeting(user_response))
+
+def main(document_base="C:/Users/Marti/repos/Assistant2021/Summer/Document-based-chatbot/BASF.txt"):
+    nltk.download('punkt') # first-time use only
+    nltk.download('wordnet') # first-time use only
+    nltk.download('averaged_perceptron_tagger') # Missing data  
+    #load the dataset
+    data=open(document_base,'r',errors = 'ignore')
+    raw=data.read()
+    raw = raw.lower()
+    #sentence tokenizer
+    sent_tokens = nltk.sent_tokenize(raw)# converts to list of sentences
+
+
+    flag=True
+    print("My name is Chatterbot and I'm a chatbot. If you want to exit, type 'bye'!")
+    while(flag):
+        user_response = input()
+        user_response=user_response.lower()
+        if(user_response!='bye'):
+            if(user_response=='thanks' or user_response=='thank you' ):
+                flag=False
+                print("Chatterbot : You are welcome..")
             else:
-                print("Chatterbot : ",end="")
-                print(response(user_response))
-                sent_tokens.remove(user_response)
+                if(greeting(user_response)!=None):
+                    print("Chatterbot : "+greeting(user_response))
+                else:
+                    print("Chatterbot : ",end="")
+                    print(response(user_response,sent_tokens))
+                    sent_tokens.remove(user_response)
+        else:
+            flag=False
+            print("Chatterbot : Bye! take care..")
+
+if __name__ == "__main__":
+    doc=None
+    if len(sys.argv)>1: 
+        main(sys.argv[1])
     else:
-        flag=False
-        print("Chatterbot : Bye! take care..")
+        main
